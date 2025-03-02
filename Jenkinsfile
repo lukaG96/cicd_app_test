@@ -4,7 +4,7 @@ pipeline {
     }
     
     environment {
-        DOTNET_VERSION = '8.0'
+        DOTNET_VERSION = '8.0.406'  // Set to .NET 8.0 version
         SOLUTION_NAME = 'cicd_app_test.sln' // Change this to your actual solution file
     }
 
@@ -18,9 +18,14 @@ pipeline {
         stage('Install .NET SDK') {
             steps {
                 script {
-                    sh 'wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh'
-                    sh 'chmod +x dotnet-install.sh'
-                    sh './dotnet-install.sh --version $DOTNET_VERSION'
+                    // Download .NET 8.0 SDK installer
+                    sh 'wget https://download.visualstudio.microsoft.com/download/pr/d2abdb4c-a96e-4123-9351-e4dd2ea20905/e8010ae2688786ffc1ebca4ebb52f41b/dotnet-sdk-8.0.406-linux-x64.tar.gz -O dotnet-sdk-8.0.tar.gz'
+                    
+                    // Install .NET SDK
+                    sh 'mkdir -p $HOME/.dotnet'
+                    sh 'tar -xvf dotnet-sdk-8.0.tar.gz -C $HOME/.dotnet'
+                    
+                    // Update PATH to include .NET SDK
                     sh 'export PATH=$HOME/.dotnet:$PATH'
                 }
             }

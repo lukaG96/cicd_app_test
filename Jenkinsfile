@@ -4,7 +4,7 @@ pipeline {
     }
     
     environment {
-        DOTNET_VERSION = '9.0'
+        DOTNET_VERSION = '8.0'
         SOLUTION_NAME = 'cicd_app_test.sln' // Change this to your actual solution file
     }
 

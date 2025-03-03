@@ -54,6 +54,15 @@ pipeline {
                 sh 'dotnet publish $SOLUTION_NAME -c Release -o publish_output'
             }
         }
+        stage("Docker Build") {
+            steps {
+                script {
+                    echo '<--------------- Docker Build Started --------------->'
+                    app = docker.build("${IMAGE_NAME}:${IMAGE_VERSION}", "--file Dockerfile .")
+                    echo '<--------------- Docker Build Completed --------------->'
+                }
+            }
+        }
 
         stage('Archive Artifacts') {
             steps {

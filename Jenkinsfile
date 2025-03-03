@@ -62,7 +62,7 @@ pipeline {
                 script {
                     echo '<--------------- Docker Build Started --------------->'
                     // Ensure the Docker Pipeline plugin is available by using docker.build() inside the script block
-                    def app = docker.build("${IMAGE_NAME}:${IMAGE_VERSION}", "--file cicd_app_test/Dockerfile .")
+                    def app = docker.build("${IMAGE_NAME}:${IMAGE_VERSION}", "--file Dockerfile .")
                     echo '<--------------- Docker Build Completed --------------->'
                 }
             }

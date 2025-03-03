@@ -1,0 +1,25 @@
+# Ignore build artifacts
+bin/
+obj/
+app/build/
+app/publish/
+
+# Ignore user-specific files
+.vscode/
+.idea/
+*.suo
+*.user
+*.vs
+*.cache
+
+# Ignore environment files
+.env
+
+# Ignore logs and temporary files
+logs/
+*.log
+temp/
+
+# Ignore dependencies downloaded via NuGet
+packages/
+.nuget/

@@ -9,7 +9,7 @@ pipeline {
         IMAGE_NAME = 'cicd_app_test'  // Docker image name
         IMAGE_VERSION = 'latest'  // Set Docker image version (you can modify as needed)
         registry = 'https://jfrogluka.jfrog.io'
-        imageName = 'jfrogluka.jfrog.io/cicd-docker-local/ttrend'  // Updated repository
+        imageName = 'jfrogluka.jfrog.io/cicd-docker-local/cicd_app_test'  // Updated repository
         version = '2.1.2'
     }
 
@@ -59,32 +59,59 @@ pipeline {
                 sh 'dotnet publish $SOLUTION_NAME -c Release -o publish_output'
             }
         }
-
-        stage("Docker Build") {
+        // Docker Build Stage
+        stage('Build Docker Image') {
             steps {
                 script {
                     echo '<--------------- Docker Build Started --------------->'
-                    // Ensure the Docker Pipeline plugin is available by using docker.build() inside the script block
-                    def app = docker.build("${IMAGE_NAME}:${IMAGE_VERSION}", "--file Dockerfile .")
-                    echo '<--------------- Docker Build Completed --------------->'
+                    // Build Docker image
+                    app = docker.build("${imageName}:${version}")
+                    echo '<--------------- Docker Build Ended --------------->'
                 }
             }
         }
-          stage("Docker Publish") {
+        // Docker Publish Stage
+        stage('Docker Publish') {
             steps {
                 script {
                     echo '<--------------- Docker Publish Started --------------->'  
                     
-                    // Docker login to JFrog Artifactory using credentials
+                    // Docker login to Artifactory
                     docker.withRegistry("${registry}", 'artifact-cred') {
-                        // Push the image to JFrog Artifactory
-                        app.push("${imageName}:${version}")
+                        // Push the image to Artifactory
+                        app.push("${version}")
                     }    
                     
                     echo '<--------------- Docker Publish Ended --------------->'  
                 }
             }
         }
+     }
+        // stage("Docker Build") {
+        //     steps {
+        //         script {
+        //             echo '<--------------- Docker Build Started --------------->'
+        //             // Ensure the Docker Pipeline plugin is available by using docker.build() inside the script block
+        //             def app = docker.build("${IMAGE_NAME}:${IMAGE_VERSION}", "--file Dockerfile .")
+        //             echo '<--------------- Docker Build Completed --------------->'
+        //         }
+        //     }
+        // }
+        //   stage("Docker Publish") {
+        //     steps {
+        //         script {
+        //             echo '<--------------- Docker Publish Started --------------->'  
+                    
+        //             // Docker login to JFrog Artifactory using credentials
+        //             docker.withRegistry("${registry}", 'artifact-cred') {
+        //                 // Push the image to JFrog Artifactory
+        //                 app.push("${imageName}:${version}")
+        //             }    
+                    
+        //             echo '<--------------- Docker Publish Ended --------------->'  
+        //         }
+        //     }
+        // }
 
         stage('Archive Artifacts') {
             steps {

@@ -29,5 +29,33 @@ namespace cicd_app_test.Controllers
             })
             .ToArray();
         }
+
+        // New GET method for testing purposes
+        [HttpGet("citiesweather", Name = "GetCitiesWeather")]
+        public IEnumerable<CityWeatherForecast> GetCitiesWeather()
+        {
+            var cities = new[]
+            {
+                new { City = "New York", TemperatureC = Random.Shared.Next(-20, 55), Summary = Summaries[Random.Shared.Next(Summaries.Length)] },
+                new { City = "Los Angeles", TemperatureC = Random.Shared.Next(-20, 55), Summary = Summaries[Random.Shared.Next(Summaries.Length)] },
+                new { City = "Chicago", TemperatureC = Random.Shared.Next(-20, 55), Summary = Summaries[Random.Shared.Next(Summaries.Length)] },
+                new { City = "Miami", TemperatureC = Random.Shared.Next(-20, 55), Summary = Summaries[Random.Shared.Next(Summaries.Length)] }
+            };
+
+            return cities.Select(city => new CityWeatherForecast
+            {
+                City = city.City,
+                TemperatureC = city.TemperatureC,
+                Summary = city.Summary
+            }).ToArray();
+        }
+    }
+
+    // New class to represent city weather forecasts
+    public class CityWeatherForecast
+    {
+        public string City { get; set; }
+        public int TemperatureC { get; set; }
+        public string Summary { get; set; }
     }
 }

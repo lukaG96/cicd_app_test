@@ -1,11 +1,13 @@
 pipeline {
     agent {
-        label 'dotnet_slave' // Change this to match your Jenkins agent label
+        label 'dotnet_slave' // Ensure this label matches your Jenkins agent that has Docker installed
     }
     
     environment {
         DOTNET_VERSION = '8.0.406'  // Set to .NET 8.0 version
         SOLUTION_NAME = 'cicd_app_test.sln' // Change this to your actual solution file
+        IMAGE_NAME = 'cicd_app_test'  // Docker image name
+        IMAGE_VERSION = 'latest'  // Set Docker image version (you can modify as needed)
     }
 
     stages {
@@ -54,11 +56,13 @@ pipeline {
                 sh 'dotnet publish $SOLUTION_NAME -c Release -o publish_output'
             }
         }
+
         stage("Docker Build") {
             steps {
                 script {
                     echo '<--------------- Docker Build Started --------------->'
-                    app = docker.build("${IMAGE_NAME}:${IMAGE_VERSION}", "--file Dockerfile .")
+                    // Ensure the Docker Pipeline plugin is available by using docker.build() inside the script block
+                    def app = docker.build("${IMAGE_NAME}:${IMAGE_VERSION}", "--file cicd_app_test/Dockerfile .")
                     echo '<--------------- Docker Build Completed --------------->'
                 }
             }
@@ -71,6 +75,7 @@ pipeline {
         }
     }
 
+    // Uncomment this if you want to publish test results
     // post {
     //     always {
     //         junit '**/TestResults/*.trx' // Publish test results

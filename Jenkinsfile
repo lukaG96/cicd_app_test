@@ -8,6 +8,9 @@ pipeline {
         SOLUTION_NAME = 'cicd_app_test.sln' // Change this to your actual solution file
         IMAGE_NAME = 'cicd_app_test'  // Docker image name
         IMAGE_VERSION = 'latest'  // Set Docker image version (you can modify as needed)
+        registry = 'https://jfrogluka.jfrog.io'
+        imageName = 'jfrogluka.jfrog.io/cicd-docker-local/ttrend'  // Updated repository
+        version = '2.1.2'
     }
 
     stages {
@@ -64,6 +67,21 @@ pipeline {
                     // Ensure the Docker Pipeline plugin is available by using docker.build() inside the script block
                     def app = docker.build("${IMAGE_NAME}:${IMAGE_VERSION}", "--file Dockerfile .")
                     echo '<--------------- Docker Build Completed --------------->'
+                }
+            }
+        }
+          stage("Docker Publish") {
+            steps {
+                script {
+                    echo '<--------------- Docker Publish Started --------------->'  
+                    
+                    // Docker login to JFrog Artifactory using credentials
+                    docker.withRegistry("${registry}", 'artifact-cred') {
+                        // Push the image to JFrog Artifactory
+                        app.push("${imageName}:${version}")
+                    }    
+                    
+                    echo '<--------------- Docker Publish Ended --------------->'  
                 }
             }
         }
